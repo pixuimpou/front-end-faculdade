@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {backUrl, refreshTable, searchStudent, handleOrder} from './util';
+import {backUrl, refreshTable, searchStudent, handleOrder, toggleModal} from './util';
 
 const MainPage = () => {
 
@@ -7,23 +7,25 @@ const MainPage = () => {
     const [name, setName] = useState('');
     const [course, setCourse] = useState('');
     const [order, setOrder] = useState('');
+    const [modal, setModal] = useState();
 
     useEffect(() => {
-        fetch(`${backUrl}/alunos?order=`)
-        .then(response => response.json())
-        .then(data => {
-            refreshTable(data, setTable);
-        });
+        // fetch(`${backUrl}/alunos?order=`)
+        // .then(response => response.json())
+        // .then(data => {
+            refreshTable(setTable, setModal);
+        // });
     }, []);
 
     return (
         <>
+            {modal}
             <div className="filter">
                 <label htmlFor="name" className="filter-item">Nome</label>
                 <input type="text" name="name" id="name" className="filter-item" onChange={e => setName(e.target.value.replace(/[ ]/g, '+'))}/>
                 <label htmlFor="course" className="filter-item">Curso</label>
                 <input type="text" name="course" id="course" className="filter-item" onChange={e => setCourse(e.target.value.replace(/[ ]/g, '+'))}/>
-                <div className="btn filter-item" onClick={e => searchStudent(name, course, setTable, order)}>Pesquisar</div>
+                <div className="btn filter-item" onClick={e => searchStudent(name, course, setTable, order, setModal)}>Pesquisar</div>
                 <select name="order" id="order" onChange={e => handleOrder(name, course, e.target.value, setOrder, setTable)}>
                     <option value="">Ordenar</option>
                     <option value="id-asc">Matricula Crescente</option>
@@ -34,6 +36,7 @@ const MainPage = () => {
                     <option value="curso-desc">Curso Decrescente</option>
                 </select>
             </div>
+            <button onClick={e => toggleModal('open', 'add-new', undefined, setModal, setTable)}>Novo Aluno</button>
             <div className="scroll">
                 <div className="container">
                     <div className="row">
